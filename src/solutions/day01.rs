@@ -1,11 +1,11 @@
 use std::cmp;
 
-pub fn part1(input: &str) -> u32 {
+pub fn part1(input: &str) -> i32 {
     let mut max = 0;
     let mut total = 0;
 
     for line in input.lines() {
-        if let Ok(num) = line.parse::<u32>() {
+        if let Ok(num) = line.parse::<i32>() {
             total += num;
         } else {
             max = cmp::max(total, max);
@@ -18,12 +18,12 @@ pub fn part1(input: &str) -> u32 {
     max
 }
 
-pub fn part2(input: &str) -> u32 {
+pub fn part2(input: &str) -> i32 {
     let mut sums = vec![];
     let mut total = 0;
 
     for line in input.lines() {
-        if let Ok(num) = line.parse::<u32>() {
+        if let Ok(num) = line.parse::<i32>() {
             total += num;
         } else {
             sums.push(total);
