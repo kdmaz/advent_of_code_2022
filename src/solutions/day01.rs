@@ -1,55 +1,35 @@
-use std::cmp;
+// calories summed for each elf
+pub fn sums(input: &str) -> Vec<i32> {
+    let mut sums = vec![];
 
-pub fn part1(input: &str) -> i32 {
-    let mut max = 0;
-    let mut total = 0;
-
-    for line in input.lines() {
-        if let Ok(num) = line.parse::<i32>() {
-            total += num;
-        } else {
-            max = cmp::max(total, max);
-            total = 0;
-        }
+    for calories_per_elf in input.split("\n\n") {
+        let sum = calories_per_elf
+            .lines()
+            .map(|line| line.parse().unwrap())
+            .collect::<Vec<i32>>()
+            .iter()
+            .sum();
+        sums.push(sum);
     }
 
-    max = cmp::max(total, max);
-    
-    max
+    sums
+}
+
+pub fn part1(input: &str) -> i32 {
+    *sums(input).iter().max().unwrap()
 }
 
 pub fn part2(input: &str) -> i32 {
-    let mut sums = vec![];
-    let mut total = 0;
-
-    for line in input.lines() {
-        if let Ok(num) = line.parse::<i32>() {
-            total += num;
-        } else {
-            sums.push(total);
-            total = 0;
-        }
-    }
-
-    sums.push(total);
-    
+    let mut sums = sums(input);
     sums.sort();
     sums.reverse();
-
-    let mut sum = 0;
-
-    for i in 0..3 {
-        sum += sums[i];
-    }
-
-
-    sum
+    sums[..3].iter().sum()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::read_file;
     use super::{part1, part2};
+    use crate::read_file;
 
     #[test]
     fn part1_example() {
@@ -66,7 +46,7 @@ mod tests {
         let expected = 72602;
         assert_eq!(output, expected);
     }
-    
+
     #[test]
     fn part2_example() {
         let input = read_file("examples", 1);

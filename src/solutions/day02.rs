@@ -8,8 +8,8 @@ pub fn part2(_input: &str) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::read_file;
     use super::{part1, part2};
+    use crate::read_file;
 
     #[test]
     fn part1_example() {
@@ -26,7 +26,7 @@ mod tests {
         let expected = 0;
         assert_eq!(output, expected);
     }
-    
+
     #[test]
     fn part2_example() {
         let input = read_file("examples", 2);
