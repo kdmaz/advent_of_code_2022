@@ -50,14 +50,10 @@ pub fn part1(input: &str) -> i32 {
     input
         .lines()
         .map(|line| {
-            let mut match_choices = line.chars();
-            let opponent_letter = match_choices.next().unwrap();
-            match_choices.next();
-            let response_letter = match_choices.next().unwrap();
-            let opponent_choice = MatchChoice::from_opponent_letter(opponent_letter);
-            let response_choice = MatchChoice::from_response_letter(response_letter);
+            let match_choices = line.chars().collect::<Vec<char>>();
+            let opponent_choice = MatchChoice::from_opponent_letter(*match_choices.first().unwrap());
+            let response_choice = MatchChoice::from_response_letter(*match_choices.last().unwrap());
             let match_outcome = MatchOutcome::from_choices(&opponent_choice, &response_choice);
-
             (response_choice as i32) + (match_outcome as i32)
         })
         .sum()
