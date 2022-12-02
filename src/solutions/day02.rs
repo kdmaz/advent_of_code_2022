@@ -1,4 +1,4 @@
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 enum MatchChoice {
     Rock = 1,
     Paper = 2,
@@ -23,8 +23,21 @@ impl MatchChoice {
             _ => panic!("Expected 'X', 'Y', or 'Z', but found {}", letter),
         }
     }
+
+    fn from_outcome_needed(opponent_choice: &MatchChoice, outcome_needed: MatchOutcome) -> Self {
+        if outcome_needed == MatchOutcome::Draw {
+            return *opponent_choice;
+        }
+
+        match (opponent_choice, outcome_needed) {
+            (MatchChoice::Scissors, MatchOutcome::Win) | (MatchChoice::Paper, MatchOutcome::Loss) => MatchChoice::Rock,
+            (MatchChoice::Rock, MatchOutcome::Win) | (MatchChoice::Scissors, MatchOutcome::Loss) => MatchChoice::Paper,
+            _ => MatchChoice::Scissors,
+        }
+    }
 }
 
+#[derive(PartialEq, Clone, Copy)]
 enum MatchOutcome {
     Loss = 0,
     Draw = 3,
@@ -44,6 +57,15 @@ impl MatchOutcome {
             (_, _) => MatchOutcome::Loss,
         }
     }
+
+    fn from_response_letter(letter: char) -> Self {
+        match letter {
+            'X' => MatchOutcome::Loss,
+            'Y' => MatchOutcome::Draw,
+            'Z' => MatchOutcome::Win,
+            _ => panic!("Expected 'X', 'Y', or 'Z', but found {}", letter),
+        }
+    }
 }
 
 pub fn part1(input: &str) -> i32 {
@@ -59,8 +81,18 @@ pub fn part1(input: &str) -> i32 {
         .sum()
 }
 
-pub fn part2(_input: &str) -> i32 {
-    -1
+pub fn part2(input: &str) -> i32 {
+    input
+    .lines()
+    .map(|line| {
+        let match_choices = line.chars().collect::<Vec<char>>();
+        let opponent_choice = MatchChoice::from_opponent_letter(*match_choices.first().unwrap());
+        let outcome_needed = MatchOutcome::from_response_letter(*match_choices.last().unwrap());
+        let response_choice = MatchChoice::from_outcome_needed(&opponent_choice, outcome_needed);
+        let match_outcome = MatchOutcome::from_choices(&opponent_choice, &response_choice);
+        (response_choice as i32) + (match_outcome as i32)
+    })
+    .sum()
 }
 
 #[cfg(test)]
@@ -88,7 +120,7 @@ mod tests {
     fn part2_example() {
         let input = read_file("examples", 2);
         let output = part2(&input);
-        let expected = 0;
+        let expected = 12;
         assert_eq!(output, expected);
     }
 
@@ -96,7 +128,7 @@ mod tests {
     fn part2_input() {
         let input = read_file("input", 2);
         let output = part2(&input);
-        let expected = 0;
+        let expected = 9975;
         assert_eq!(output, expected);
     }
 }
