@@ -3,16 +3,16 @@ use std::collections::HashSet;
 use super::day03_shared::get_priority;
 
 fn main(input: &str) -> i32 {
-    let mut line_index = 0;
+    let mut i = 0;
     let lines: Vec<&str> = input.lines().collect();
     let mut sum = 0;
 
-    while line_index < lines.len() {
+    while i < lines.len() {
         let mut groups = [HashSet::new(), HashSet::new(), HashSet::new()];
 
-        for (current_line_index, _) in lines.iter().enumerate().skip(line_index).take(3) {
-            for c in lines[current_line_index].chars() {
-                let group_index = current_line_index - line_index;
+        for (j, _) in lines.iter().enumerate().skip(i).take(3) {
+            for c in lines[j].chars() {
+                let group_index = j - i;
                 groups[group_index].insert(c);
             }
         }
@@ -23,7 +23,7 @@ fn main(input: &str) -> i32 {
             }
         }
 
-        line_index += 3;
+        i += 3;
     }
 
     sum
