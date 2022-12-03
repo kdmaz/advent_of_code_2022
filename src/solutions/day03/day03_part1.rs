@@ -1,6 +1,5 @@
-use std::collections::HashSet;
 use super::day03_shared::get_priority;
-
+use std::collections::HashSet;
 
 fn main(input: &str) -> i32 {
     input
