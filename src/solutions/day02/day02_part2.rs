@@ -1,83 +1,41 @@
-#[derive(PartialEq, Clone, Copy)]
-enum MatchChoice {
-    Rock = 1,
-    Paper = 2,
-    Scissors = 3,
-}
+use super::day02_shared::{Choice, Outcome};
+use std::str::FromStr;
 
-impl MatchChoice {
-    fn from_opponent_letter(letter: char) -> Self {
-        match letter {
-            'A' => Self::Rock,
-            'B' => Self::Paper,
-            'C' => Self::Scissors,
-            _ => panic!("Expected 'A', 'B', or 'C', but found {}", letter),
-        }
-    }
-
-    fn from_response_letter(letter: char) -> Self {
-        match letter {
-            'X' => Self::Rock,
-            'Y' => Self::Paper,
-            'Z' => Self::Scissors,
-            _ => panic!("Expected 'X', 'Y', or 'Z', but found {}", letter),
-        }
-    }
-
-    fn from_outcome_needed(opponent_choice: &MatchChoice, outcome_needed: MatchOutcome) -> Self {
-        if outcome_needed == MatchOutcome::Draw {
+impl Choice {
+    fn from_outcome_needed(opponent_choice: &Choice, outcome_needed: Outcome) -> Self {
+        if outcome_needed == Outcome::Draw {
             return *opponent_choice;
         }
 
         match (opponent_choice, outcome_needed) {
-            (MatchChoice::Scissors, MatchOutcome::Win) | (MatchChoice::Paper, MatchOutcome::Loss) => MatchChoice::Rock,
-            (MatchChoice::Rock, MatchOutcome::Win) | (MatchChoice::Scissors, MatchOutcome::Loss) => MatchChoice::Paper,
-            _ => MatchChoice::Scissors,
+            (Choice::Scissors, Outcome::Win) | (Choice::Paper, Outcome::Loss) => Choice::Rock,
+            (Choice::Rock, Outcome::Win) | (Choice::Scissors, Outcome::Loss) => Choice::Paper,
+            _ => Choice::Scissors,
         }
     }
 }
 
 pub fn main(input: &str) -> i32 {
-  input
-  .lines()
-  .map(|line| {
-      let match_choices = line.chars().collect::<Vec<char>>();
-      let opponent_choice = MatchChoice::from_opponent_letter(*match_choices.first().unwrap());
-      let outcome_needed = MatchOutcome::from_response_letter(*match_choices.last().unwrap());
-      let response_choice = MatchChoice::from_outcome_needed(&opponent_choice, outcome_needed);
-      let match_outcome = MatchOutcome::from_choices(&opponent_choice, &response_choice);
-      (response_choice as i32) + (match_outcome as i32)
-  })
-  .sum()
+    input
+        .lines()
+        .map(|line| {
+            let choices: Vec<&str> = line.split(" ").collect();
+            let opponent_choice = Choice::from_str(choices[0]).unwrap();
+            let outcome_needed = Outcome::from_response_letter(choices[1]);
+            let response_choice = Choice::from_outcome_needed(&opponent_choice, outcome_needed);
+            let match_outcome = Outcome::from_choices(&opponent_choice, &response_choice);
+            (response_choice as i32) + (match_outcome as i32)
+        })
+        .sum()
 }
 
-#[derive(PartialEq, Clone, Copy)]
-enum MatchOutcome {
-    Loss = 0,
-    Draw = 3,
-    Win = 6,
-}
-
-impl MatchOutcome {
-    fn from_choices(opponent_choice: &MatchChoice, response_choice: &MatchChoice) -> Self {
-        if opponent_choice == response_choice {
-            return MatchOutcome::Draw;
-        }
-
-        match (opponent_choice, response_choice) {
-            (MatchChoice::Rock, MatchChoice::Paper)
-            | (MatchChoice::Scissors, MatchChoice::Rock)
-            | (MatchChoice::Paper, MatchChoice::Scissors) => MatchOutcome::Win,
-            (_, _) => MatchOutcome::Loss,
-        }
-    }
-
-    fn from_response_letter(letter: char) -> Self {
-        match letter {
-            'X' => MatchOutcome::Loss,
-            'Y' => MatchOutcome::Draw,
-            'Z' => MatchOutcome::Win,
-            _ => panic!("Expected 'X', 'Y', or 'Z', but found {}", letter),
+impl Outcome {
+    fn from_response_letter(s: &str) -> Self {
+        match s {
+            "X" => Outcome::Loss,
+            "Y" => Outcome::Draw,
+            "Z" => Outcome::Win,
+            _ => panic!("Expected 'X', 'Y', or 'Z', but found {}", s),
         }
     }
 }
