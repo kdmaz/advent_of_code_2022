@@ -1,13 +1,11 @@
+use super::day03_shared::get_priority;
 use std::collections::HashSet;
 
-use super::day03_shared::get_priority;
-
 fn main(input: &str) -> i32 {
-    let mut i = 0;
     let lines: Vec<&str> = input.lines().collect();
     let mut sum = 0;
 
-    while i < lines.len() {
+    for i in (0..lines.len()).step_by(3) {
         let mut groups = [HashSet::new(), HashSet::new(), HashSet::new()];
 
         for (j, line) in lines.iter().skip(i).enumerate().take(3) {
@@ -21,8 +19,6 @@ fn main(input: &str) -> i32 {
                 sum += get_priority(*c);
             }
         }
-
-        i += 3;
     }
 
     sum
