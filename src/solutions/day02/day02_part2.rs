@@ -15,29 +15,31 @@ impl Choice {
     }
 }
 
+impl FromStr for Outcome {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "X" => Ok(Self::Loss),
+            "Y" => Ok(Self::Draw),
+            "Z" => Ok(Self::Win),
+            _ => Err("Invalid choice".to_owned()),
+        }
+    }
+}
+
 pub fn main(input: &str) -> i32 {
     input
         .lines()
         .map(|line| {
             let choices: Vec<&str> = line.split(" ").collect();
             let opponent_choice = Choice::from_str(choices[0]).unwrap();
-            let outcome_needed = Outcome::from_response_letter(choices[1]);
+            let outcome_needed = Outcome::from_str(choices[1]).unwrap();
             let response_choice = Choice::from_outcome_needed(&opponent_choice, outcome_needed);
             let match_outcome = Outcome::from_choices(&opponent_choice, &response_choice);
             (response_choice as i32) + (match_outcome as i32)
         })
         .sum()
-}
-
-impl Outcome {
-    fn from_response_letter(s: &str) -> Self {
-        match s {
-            "X" => Outcome::Loss,
-            "Y" => Outcome::Draw,
-            "Z" => Outcome::Win,
-            _ => panic!("Expected 'X', 'Y', or 'Z', but found {}", s),
-        }
-    }
 }
 
 #[cfg(test)]

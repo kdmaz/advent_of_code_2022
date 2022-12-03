@@ -8,8 +8,8 @@ fn main(input: &str) -> i32 {
             let choices: Vec<&str> = line.split(" ").collect();
             let opponent_choice = Choice::from_str(choices[0]).unwrap();
             let response_choice = Choice::from_str(choices[1]).unwrap();
-            let match_outcome = Outcome::from_choices(&opponent_choice, &response_choice);
-            (response_choice as i32) + (match_outcome as i32)
+            let outcome = Outcome::from_choices(&opponent_choice, &response_choice);
+            (response_choice as i32) + (outcome as i32)
         })
         .sum()
 }
