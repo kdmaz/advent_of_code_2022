@@ -10,10 +10,9 @@ fn main(input: &str) -> i32 {
     while i < lines.len() {
         let mut groups = [HashSet::new(), HashSet::new(), HashSet::new()];
 
-        for (j, _) in lines.iter().enumerate().skip(i).take(3) {
-            for c in lines[j].chars() {
-                let group_index = j - i;
-                groups[group_index].insert(c);
+        for (j, line) in lines.iter().skip(i).enumerate().take(3) {
+            for c in line.chars() {
+                groups[j].insert(c);
             }
         }
 
