@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub enum Choice {
     Rock = 1,
     Paper = 2,
@@ -20,7 +20,7 @@ impl FromStr for Choice {
     }
 }
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub enum Outcome {
     Loss = 0,
     Draw = 3,

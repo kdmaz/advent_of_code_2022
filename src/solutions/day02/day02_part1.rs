@@ -5,7 +5,7 @@ fn main(input: &str) -> i32 {
     input
         .lines()
         .map(|line| {
-            let choices: Vec<&str> = line.split(" ").collect();
+            let choices: Vec<&str> = line.split(' ').collect();
             let opponent_choice = Choice::from_str(choices[0]).unwrap();
             let response_choice = Choice::from_str(choices[1]).unwrap();
             let outcome = Outcome::from_choices(&opponent_choice, &response_choice);
