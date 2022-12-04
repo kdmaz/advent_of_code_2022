@@ -1,31 +1,5 @@
+use super::day04_shared::Pair;
 use std::str::FromStr;
-
-struct Pair {
-    min: i32,
-    max: i32,
-}
-
-impl FromStr for Pair {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let pair: Vec<i32> = s
-            .split('-')
-            .map(|pair| pair.parse::<i32>().unwrap())
-            .collect();
-
-        Ok(Pair {
-            min: pair[0],
-            max: pair[1],
-        })
-    }
-}
-
-impl Pair {
-    fn is_subset(&self, other: &Pair) -> bool {
-        self.min >= other.min && self.max <= other.max
-    }
-}
 
 fn main(input: &str) -> i32 {
     input
