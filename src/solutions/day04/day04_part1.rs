@@ -22,7 +22,7 @@ impl FromStr for Pair {
 }
 
 impl Pair {
-    fn is_subset(&self, other: &Pair) -> boot {
+    fn is_subset(&self, other: &Pair) -> bool {
         self.min >= other.min && self.max <= other.max
     }
 }
@@ -36,11 +36,7 @@ fn main(input: &str) -> i32 {
             let p1 = Pair::from_str(pairs[0]).unwrap();
             let p2 = Pair::from_str(pairs[1]).unwrap();
 
-            if p1.is_subset(&p2) || p2.is_subset(&p1) {
-                1
-            } else {
-                0
-            }
+            (p1.is_subset(&p2) || p2.is_subset(&p1)) as i32
         })
         .sum()
 }
