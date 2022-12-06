@@ -145,7 +145,7 @@ impl FromStr for Step {
     }
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq)]
 enum Code {
     Move,
     From,
