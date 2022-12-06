@@ -100,19 +100,6 @@ impl Step {
     }
 }
 
-impl FromStr for Code {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(match s {
-            "move " => Self::Move,
-            "from " => Self::From,
-            "to " => Self::To,
-            _ => Self::Invalid,
-        })
-    }
-}
-
 impl FromStr for Step {
     type Err = ();
 
@@ -151,4 +138,17 @@ enum Code {
     From,
     To,
     Invalid,
+}
+
+impl FromStr for Code {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
+            "move " => Self::Move,
+            "from " => Self::From,
+            "to " => Self::To,
+            _ => Self::Invalid,
+        })
+    }
 }
