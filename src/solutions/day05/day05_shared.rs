@@ -1,8 +1,8 @@
 use std::str::FromStr;
 
 pub struct Procedure {
-    pub stacks: Vec<Vec<char>>,
-    pub steps: Vec<Step>,
+    stacks: Vec<Vec<char>>,
+    steps: Vec<Step>,
 }
 
 impl Procedure {
@@ -45,6 +45,33 @@ impl Procedure {
         procedure
     }
 
+    pub fn run_with_9000(&mut self) {
+        for step in &self.steps {
+            let Step { qty, from, to } = step;
+            for _ in 0..*qty {
+                let c = self.stacks[from - 1].pop().unwrap();
+                self.stacks[to - 1].push(c);
+            }
+        }
+    }
+
+    pub fn run_with_9001(&mut self) {
+        for step in &self.steps {
+            let Step { qty, from, to } = step;
+            let mut stack = vec![];
+            for _ in 0..*qty {
+                let c = self.stacks[from - 1].pop().unwrap();
+                stack.push(c);
+            }
+
+            stack.reverse();
+
+            for c in stack {
+                self.stacks[to - 1].push(c);
+            }
+        }
+    }
+
     pub fn get_result(&mut self) -> String {
         let mut result = String::new();
         for stack in &mut self.stacks {
@@ -56,10 +83,10 @@ impl Procedure {
 }
 
 #[derive(Default)]
-pub struct Step {
-    pub qty: u8,
-    pub from: usize,
-    pub to: usize,
+struct Step {
+    qty: u8,
+    from: usize,
+    to: usize,
 }
 
 impl Step {

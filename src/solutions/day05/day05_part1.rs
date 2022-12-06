@@ -1,20 +1,8 @@
-use super::day05_shared::{Procedure, Step};
-
-impl Procedure {
-    fn run(&mut self) {
-        for step in &self.steps {
-            let Step { qty, from, to } = step;
-            for _ in 0..*qty {
-                let c = self.stacks[from - 1].pop().unwrap();
-                self.stacks[to - 1].push(c);
-            }
-        }
-    }
-}
+use super::day05_shared::Procedure;
 
 fn main(input: &str) -> String {
     let mut procedure = Procedure::build(input);
-    procedure.run();
+    procedure.run_with_9000();
     procedure.get_result()
 }
 
