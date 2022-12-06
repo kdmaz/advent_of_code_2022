@@ -39,14 +39,14 @@ impl Procedure {
             }
         }
 
+        for stack in &mut procedure.stacks {
+            stack.reverse();
+        }
+
         procedure
     }
 
     fn run(&mut self) -> String {
-        for stack in &mut self.stacks {
-            stack.reverse();
-        }
-
         for step in &self.steps {
             let Step { qty, from, to } = step;
             for _ in 0..*qty {
