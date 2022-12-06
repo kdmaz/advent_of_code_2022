@@ -14,14 +14,14 @@ impl Procedure {
                 self.stacks[to - 1].push(cargo);
             }
         }
-        
+
         let mut result = String::new();
-        
+
         for stack in &mut self.stacks {
             let cargo = stack.pop().unwrap();
             result.push(cargo);
         }
-        
+
         result
     }
 }
