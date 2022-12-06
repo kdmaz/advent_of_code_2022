@@ -1,7 +1,7 @@
 use super::day05_shared::{Procedure, Step};
 
 impl Procedure {
-    fn run(&mut self) -> String {
+    fn run(&mut self) {
         for step in &self.steps {
             let Step { qty, from, to } = step;
             for _ in 0..*qty {
@@ -9,18 +9,13 @@ impl Procedure {
                 self.stacks[to - 1].push(c);
             }
         }
-
-        let mut result = String::new();
-        for stack in &mut self.stacks {
-            let c = stack.pop().unwrap();
-            result.push(c);
-        }
-        result
     }
 }
 
 fn main(input: &str) -> String {
-    Procedure::build(input).run()
+    let mut procedure = Procedure::build(input);
+    procedure.run();
+    procedure.get_result()
 }
 
 #[cfg(test)]

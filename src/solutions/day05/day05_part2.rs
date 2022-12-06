@@ -1,7 +1,7 @@
 use super::day05_shared::{Procedure, Step};
 
 impl Procedure {
-    fn run2(&mut self) -> String {
+    fn run2(&mut self) {
         for step in &self.steps {
             let Step { qty, from, to } = step;
             let mut stack = vec![];
@@ -16,18 +16,13 @@ impl Procedure {
                 self.stacks[to - 1].push(c);
             }
         }
-
-        let mut result = String::new();
-        for stack in &mut self.stacks {
-            let c = stack.pop().unwrap();
-            result.push(c);
-        }
-        result
     }
 }
 
 fn main(input: &str) -> String {
-    Procedure::build(input).run2()
+    let mut procedure = Procedure::build(input);
+    procedure.run2();
+    procedure.get_result()
 }
 
 #[cfg(test)]
@@ -47,7 +42,7 @@ mod tests {
     fn input() {
         let input = read_file("input", 5);
         let output = main(&input);
-        let expected = "".to_owned();
+        let expected = "TCGLQSLPW".to_owned();
         assert_eq!(output, expected);
     }
 }

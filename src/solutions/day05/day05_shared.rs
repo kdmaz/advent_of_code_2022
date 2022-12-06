@@ -1,6 +1,5 @@
 use std::str::FromStr;
 
-#[derive(Debug)]
 pub struct Procedure {
     pub stacks: Vec<Vec<char>>,
     pub steps: Vec<Step>,
@@ -45,9 +44,18 @@ impl Procedure {
 
         procedure
     }
+
+    pub fn get_result(&mut self) -> String {
+        let mut result = String::new();
+        for stack in &mut self.stacks {
+            let c = stack.pop().unwrap();
+            result.push(c);
+        }
+        result
+    }
 }
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct Step {
     pub qty: u8,
     pub from: usize,
