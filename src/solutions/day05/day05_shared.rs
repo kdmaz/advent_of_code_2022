@@ -108,19 +108,18 @@ impl FromStr for Step {
         let mut step = Step::default();
         let mut code_buffer = String::new();
         let mut val_buffer = String::new();
-        let chars: Vec<char> = s.chars().collect();
-        let len = chars.len();
 
-        for (i, char) in chars.into_iter().enumerate() {
+        let mut it = s.chars().peekable();
+        while let Some(c) = it.next() {
             let code = Code::from_str(&code_buffer).unwrap();
             if code == Code::Invalid {
-                code_buffer.push(char);
+                code_buffer.push(c);
                 continue;
             }
 
-            val_buffer.push(char);
+            val_buffer.push(c);
 
-            if char == ' ' || i + 1 == len {
+            if c == ' ' || it.peek() == None {
                 let val = val_buffer.trim().parse::<u8>().unwrap();
                 step.set(code, val);
                 code_buffer.clear();
