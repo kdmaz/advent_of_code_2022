@@ -116,7 +116,7 @@ impl FromStr for Step {
                 code_buffer.push(c);
                 continue;
             }
-            
+
             val_buffer.push(c);
             if c != ' ' && it.peek().is_some() {
                 continue;
