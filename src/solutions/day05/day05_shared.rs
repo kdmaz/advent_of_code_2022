@@ -116,16 +116,16 @@ impl FromStr for Step {
                 code_buffer.push(c);
                 continue;
             }
-
+            
             val_buffer.push(c);
-
-            if c == ' ' || it.peek() == None {
-                let val = val_buffer.trim().parse::<u8>().unwrap();
-                step.set(code, val);
-                code_buffer.clear();
-                val_buffer.clear();
+            if c != ' ' && it.peek().is_some() {
                 continue;
             }
+
+            let val = val_buffer.trim().parse::<u8>().unwrap();
+            step.set(code, val);
+            code_buffer.clear();
+            val_buffer.clear();
         }
 
         Ok(step)
