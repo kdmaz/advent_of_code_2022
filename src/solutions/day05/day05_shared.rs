@@ -91,7 +91,7 @@ struct Step {
 }
 
 impl Step {
-    fn update(&mut self, code: Code, val: u8) {
+    fn set(&mut self, code: Code, val: u8) {
         match code {
             Code::Move => self.qty = val,
             Code::From => self.from = val as usize - 1,
@@ -122,7 +122,7 @@ impl FromStr for Step {
 
             if char == ' ' || i + 1 == len {
                 let val = val_buffer.trim().parse::<u8>().unwrap();
-                step.update(code, val);
+                step.set(code, val);
                 code_buffer.clear();
                 val_buffer.clear();
                 continue;
