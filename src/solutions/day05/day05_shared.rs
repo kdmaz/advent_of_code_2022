@@ -10,8 +10,8 @@ impl Procedure {
         for step in &self.steps {
             let Step { qty, from, to } = step;
             for _ in 0..*qty {
-                let c = self.stacks[from - 1].pop().unwrap();
-                self.stacks[to - 1].push(c);
+                let c = self.stacks[*from].pop().unwrap();
+                self.stacks[*to].push(c);
             }
         }
     }
@@ -21,14 +21,14 @@ impl Procedure {
             let Step { qty, from, to } = step;
             let mut stack = vec![];
             for _ in 0..*qty {
-                let c = self.stacks[from - 1].pop().unwrap();
+                let c = self.stacks[*from].pop().unwrap();
                 stack.push(c);
             }
 
             stack.reverse();
 
             for c in stack {
-                self.stacks[to - 1].push(c);
+                self.stacks[*to].push(c);
             }
         }
     }
@@ -52,6 +52,11 @@ impl FromStr for Procedure {
             steps: vec![],
         };
 
+        let first_line = s.lines().into_iter().next().unwrap();
+        for _ in (0..first_line.len()).step_by(4) {
+            procedure.stacks.push(vec![]);
+        }
+
         for line in s.lines() {
             if line.starts_with('m') {
                 let step = Step::from_str(line).unwrap();
@@ -59,22 +64,14 @@ impl FromStr for Procedure {
                 continue;
             }
 
-            let mut is_crate = false;
-            for (i, c) in line.chars().enumerate() {
-                let stack_i = i / 4;
-
-                if procedure.stacks.len() == stack_i {
-                    procedure.stacks.push(vec![]);
+            let mut it = line.chars().enumerate();
+            while let Some((i, c)) = it.next() {
+                if c != '[' {
+                    continue;
                 }
 
-                if is_crate {
-                    procedure.stacks[stack_i].push(c);
-                    is_crate = false;
-                }
-
-                if c == '[' {
-                    is_crate = true;
-                }
+                let c = it.next().unwrap().1;
+                procedure.stacks[(i + 1) / 4].push(c);
             }
         }
 
@@ -97,8 +94,8 @@ impl Step {
     fn update(&mut self, code: Code, val: u8) {
         match code {
             Code::Move => self.qty = val,
-            Code::From => self.from = val as usize,
-            Code::To => self.to = val as usize,
+            Code::From => self.from = val as usize - 1,
+            Code::To => self.to = val as usize - 1,
             Code::Invalid => {}
         }
     }
