@@ -6,45 +6,6 @@ pub struct Procedure {
 }
 
 impl Procedure {
-    pub fn build(input: &str) -> Self {
-        let mut procedure = Procedure {
-            stacks: vec![],
-            steps: vec![],
-        };
-
-        for line in input.lines() {
-            if line.starts_with('m') {
-                let step = Step::from_str(line).unwrap();
-                procedure.steps.push(step);
-                continue;
-            }
-
-            let mut is_crate = false;
-            for (i, c) in line.chars().enumerate() {
-                let stack_i = i / 4;
-
-                if procedure.stacks.len() == stack_i {
-                    procedure.stacks.push(vec![]);
-                }
-
-                if is_crate {
-                    procedure.stacks[stack_i].push(c);
-                    is_crate = false;
-                }
-
-                if c == '[' {
-                    is_crate = true;
-                }
-            }
-        }
-
-        for stack in &mut procedure.stacks {
-            stack.reverse();
-        }
-
-        procedure
-    }
-
     pub fn run_with_9000(&mut self) {
         for step in &self.steps {
             let Step { qty, from, to } = step;
@@ -79,6 +40,49 @@ impl Procedure {
             result.push(c);
         }
         result
+    }
+}
+
+impl FromStr for Procedure {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut procedure = Procedure {
+            stacks: vec![],
+            steps: vec![],
+        };
+
+        for line in s.lines() {
+            if line.starts_with('m') {
+                let step = Step::from_str(line).unwrap();
+                procedure.steps.push(step);
+                continue;
+            }
+
+            let mut is_crate = false;
+            for (i, c) in line.chars().enumerate() {
+                let stack_i = i / 4;
+
+                if procedure.stacks.len() == stack_i {
+                    procedure.stacks.push(vec![]);
+                }
+
+                if is_crate {
+                    procedure.stacks[stack_i].push(c);
+                    is_crate = false;
+                }
+
+                if c == '[' {
+                    is_crate = true;
+                }
+            }
+        }
+
+        for stack in &mut procedure.stacks {
+            stack.reverse();
+        }
+
+        Ok(procedure)
     }
 }
 

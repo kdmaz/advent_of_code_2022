@@ -1,7 +1,9 @@
+use std::str::FromStr;
+
 use super::day05_shared::Procedure;
 
 fn main(input: &str) -> String {
-    let mut procedure = Procedure::build(input);
+    let mut procedure = Procedure::from_str(input).unwrap();
     procedure.run_with_9001();
     procedure.get_result()
 }
