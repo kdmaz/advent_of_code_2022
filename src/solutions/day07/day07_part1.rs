@@ -27,7 +27,6 @@ impl FromStr for FileSystem {
                 let next_directory = cwd.last().unwrap().borrow().sub_directories.get(&name).unwrap().clone();
                 cwd.push(next_directory);
             } else {
-                println!("line {}", line);
                 cwd.last().unwrap().borrow_mut().populate_from_str(line);
             }
         }
