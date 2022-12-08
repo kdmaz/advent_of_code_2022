@@ -28,7 +28,7 @@ touch $example_path;
 touch $input_path;
 
 new_file=$(cat << EOF
-fn main(input: &str) -> i32 {
+fn main(_input: &str) -> i32 {
     -1
 }
 
