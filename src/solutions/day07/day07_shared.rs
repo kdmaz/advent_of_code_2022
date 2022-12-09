@@ -1,9 +1,14 @@
-use std::{str::FromStr, rc::Rc, cell::{RefCell, RefMut}, collections::HashMap};
+use std::{
+    cell::{RefCell, RefMut},
+    collections::HashMap,
+    rc::Rc,
+    str::FromStr,
+};
 type RefDirectory = Rc<RefCell<Directory>>;
 
 #[derive(Debug)]
 pub struct FileSystem {
-    pub root: RefDirectory
+    pub root: RefDirectory,
 }
 
 impl FromStr for FileSystem {
@@ -12,9 +17,7 @@ impl FromStr for FileSystem {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let root = Rc::new(RefCell::new(Directory::new("/".to_owned())));
         let mut cwd = vec![root.clone()];
-        let file_system = FileSystem {
-            root: root.clone()
-        };
+        let file_system = FileSystem { root };
 
         for line in s.lines() {
             if line.starts_with("$ cd /") || line.starts_with("$ ls") {
@@ -23,13 +26,20 @@ impl FromStr for FileSystem {
                 cwd.pop();
             } else if line.starts_with("$ cd") {
                 let name = line.split("$ cd ").collect::<Vec<&str>>()[1].to_owned();
-                let next_directory = cwd.last().unwrap().borrow().sub_directories.get(&name).unwrap().clone();
+                let next_directory = cwd
+                    .last()
+                    .unwrap()
+                    .borrow()
+                    .sub_directories
+                    .get(&name)
+                    .unwrap()
+                    .clone();
                 cwd.push(next_directory);
             } else {
                 cwd.last().unwrap().borrow_mut().populate_from_str(line);
             }
         }
-        
+
         set_directory_size(&mut file_system.root.borrow_mut());
 
         Ok(file_system)
@@ -38,7 +48,7 @@ impl FromStr for FileSystem {
 
 fn set_directory_size(directory: &mut RefMut<Directory>) -> i32 {
     let mut size = 0;
-    for (_, sub_directory) in &directory.sub_directories {
+    for sub_directory in directory.sub_directories.values() {
         size += set_directory_size(&mut sub_directory.clone().borrow_mut());
     }
 
@@ -71,7 +81,10 @@ impl Directory {
     fn populate_from_str(&mut self, s: &str) {
         if s.starts_with("dir") {
             let sub_directory = Self::from_str(s).unwrap();
-            self.sub_directories.insert(sub_directory.name.clone(), Rc::new(RefCell::new(sub_directory)));
+            self.sub_directories.insert(
+                sub_directory.name.clone(),
+                Rc::new(RefCell::new(sub_directory)),
+            );
         } else {
             let file = File::from_str(s).unwrap();
             self.files.push(file);
@@ -104,4 +117,3 @@ impl FromStr for File {
         Ok(Self { name, size })
     }
 }
-

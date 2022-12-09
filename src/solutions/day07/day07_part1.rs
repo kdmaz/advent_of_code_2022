@@ -1,8 +1,8 @@
-use std::{str::FromStr, cell::Ref};
-use super::day07_shared::{FileSystem, Directory};
+use super::day07_shared::{Directory, FileSystem};
+use std::{cell::Ref, str::FromStr};
 
 fn get_sizes_under_100_000(directory: &Ref<Directory>, vec: &mut Vec<i32>) {
-    for (_, sub_directory) in &directory.sub_directories {
+    for sub_directory in directory.sub_directories.values() {
         get_sizes_under_100_000(&sub_directory.clone().borrow(), vec);
     }
 
