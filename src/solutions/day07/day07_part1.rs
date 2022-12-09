@@ -1,4 +1,4 @@
-use std::{str::FromStr, rc::Rc, cell::RefCell, collections::HashMap};
+use std::{str::FromStr, rc::Rc, cell::{RefCell, RefMut}, collections::HashMap};
 
 type RefDirectory = Rc<RefCell<Directory>>;
 
@@ -90,10 +90,31 @@ impl FromStr for File {
     }
 }
 
+fn get_and_set_directory_size(directory: &mut RefMut<Directory>, vec: &mut Vec<i32>) -> i32 {
+    let mut size = 0;
+    for (_, sub_directory) in &directory.sub_directories {
+        size += get_and_set_directory_size(&mut sub_directory.clone().borrow_mut(), vec);
+    }
+
+    for dir_file in &directory.files {
+        size += dir_file.size;
+    }
+    directory.size = size;
+
+    if size < 100_000 {
+        vec.push(size);
+    }
+
+    size
+}
+
+
+
 fn main(input: &str) -> i32 {
-    let _filesystem = FileSystem::from_str(input).unwrap();
-    println!("{:#?}", _filesystem);
-    -1
+    let filesystem = FileSystem::from_str(input).unwrap();
+    let mut vec = vec![];
+    get_and_set_directory_size(&mut filesystem.root.borrow_mut(), &mut vec);
+    vec.iter().sum()
 }
 
 #[cfg(test)]
