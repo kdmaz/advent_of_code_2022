@@ -1,3 +1,5 @@
+#![allow(clippy::needless_range_loop)]
+
 fn main(input: &str) -> u32 {
     let nums: Vec<Vec<u32>> = input
         .lines()
