@@ -1,4 +1,4 @@
-use std::{str::FromStr, rc::Rc, cell::{RefCell, RefMut}, collections::HashMap};
+use std::{str::FromStr, rc::Rc, cell::{RefCell, RefMut, Ref}, collections::HashMap};
 
 type RefDirectory = Rc<RefCell<Directory>>;
 
@@ -30,9 +30,25 @@ impl FromStr for FileSystem {
                 cwd.last().unwrap().borrow_mut().populate_from_str(line);
             }
         }
+        
+        set_directory_size(&mut file_system.root.borrow_mut());
 
         Ok(file_system)
     }
+}
+
+fn set_directory_size(directory: &mut RefMut<Directory>) -> i32 {
+    let mut size = 0;
+    for (_, sub_directory) in &directory.sub_directories {
+        size += set_directory_size(&mut sub_directory.clone().borrow_mut());
+    }
+
+    for dir_file in &directory.files {
+        size += dir_file.size;
+    }
+    directory.size = size;
+
+    size
 }
 
 #[derive(Debug)]
@@ -90,31 +106,27 @@ impl FromStr for File {
     }
 }
 
-fn get_and_set_directory_size(directory: &mut RefMut<Directory>, vec: &mut Vec<i32>) -> i32 {
-    let mut size = 0;
+fn get_sizes_under_100_000(directory: &Ref<Directory>, vec: &mut Vec<i32>) {
     for (_, sub_directory) in &directory.sub_directories {
-        size += get_and_set_directory_size(&mut sub_directory.clone().borrow_mut(), vec);
+        get_sizes_under_100_000(&sub_directory.clone().borrow(), vec);
     }
 
-    for dir_file in &directory.files {
-        size += dir_file.size;
+    if directory.size < 100_000 {
+        vec.push(directory.size);
     }
-    directory.size = size;
-
-    if size < 100_000 {
-        vec.push(size);
-    }
-
-    size
 }
 
+fn sum_of_directories_under_100_000(file_system: FileSystem) -> i32 {
+    let mut sizes = vec![];
 
+    get_sizes_under_100_000(&file_system.root.borrow(), &mut sizes);
+
+    sizes.iter().sum()
+}
 
 fn main(input: &str) -> i32 {
-    let filesystem = FileSystem::from_str(input).unwrap();
-    let mut vec = vec![];
-    get_and_set_directory_size(&mut filesystem.root.borrow_mut(), &mut vec);
-    vec.iter().sum()
+    let file_system = FileSystem::from_str(input).unwrap();
+    sum_of_directories_under_100_000(file_system)
 }
 
 #[cfg(test)]
@@ -134,7 +146,7 @@ mod tests {
     fn input() {
         let input = read_file("input", 7);
         let output = main(&input);
-        let expected = 0;
+        let expected = 1427048;
         assert_eq!(output, expected);
     }
 }
