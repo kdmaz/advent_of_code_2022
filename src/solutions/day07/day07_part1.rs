@@ -11,7 +11,7 @@ fn get_sizes_under_100_000(directory: &Ref<Directory>, vec: &mut Vec<i32>) {
     }
 }
 
-fn sum_of_directories_under_100_000(file_system: FileSystem) -> i32 {
+fn sum_of_directories_under_100_000(file_system: &FileSystem) -> i32 {
     let mut sizes = vec![];
 
     get_sizes_under_100_000(&file_system.root.borrow(), &mut sizes);
@@ -21,7 +21,7 @@ fn sum_of_directories_under_100_000(file_system: FileSystem) -> i32 {
 
 fn main(input: &str) -> i32 {
     let file_system = FileSystem::from_str(input).unwrap();
-    sum_of_directories_under_100_000(file_system)
+    sum_of_directories_under_100_000(&file_system)
 }
 
 #[cfg(test)]
