@@ -113,8 +113,6 @@ impl Bridge {
                 }
 
                 grid[tail.x as usize][tail.y as usize] = "#".to_owned();
-
-                println!("tail {:?}", tail);
             }
         }
     }
@@ -171,14 +169,11 @@ impl FromStr for Bridge {
         let length = (max.x - min.x) + 1;
         let height = (max.y - min.y) + 1;
 
-        let grid = vec![vec![".".to_owned(); length as usize]; height as usize];
+        let grid = vec![vec![".".to_owned(); height as usize]; length as usize];
 
         Ok(Bridge {
             grid,
-            start: Position {
-                x: start.x,
-                y: start.y,
-            },
+            start,
             motions,
         })
     }
