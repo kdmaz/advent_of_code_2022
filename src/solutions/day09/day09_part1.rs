@@ -57,6 +57,8 @@ impl Bridge {
             y: start.y,
         };
 
+        grid[start.x as usize][start.y as usize] = "#".to_owned();
+
         for Motion {
             direction,
             distance,
@@ -64,13 +66,55 @@ impl Bridge {
         {
             for _ in 0..*distance {
                 match *direction {
-                    Direction::U => head.y += 1,
-                    Direction::D => head.y -= 1,
-                    Direction::R => head.x += 1,
-                    Direction::L => head.x -= 1,
+                    Direction::U => {
+                        head.y += 1;
+
+                        if head.y - tail.y == 2 {
+                            tail.y = head.y - 1;
+
+                            if tail.x != head.x {
+                                tail.x = head.x;
+                            }
+                        }
+                    }
+                    Direction::D => {
+                        head.y -= 1;
+
+                        if tail.y - head.y == 2 {
+                            tail.y = head.y + 1;
+
+                            if tail.x != head.x {
+                                tail.x = head.x;
+                            }
+                        }
+                    }
+                    Direction::R => {
+                        head.x += 1;
+
+                        if head.x - tail.x == 2 {
+                            tail.x = head.x - 1;
+
+                            if tail.y != head.y {
+                                tail.y = head.y;
+                            }
+                        }
+                    }
+                    Direction::L => {
+                        head.x -= 1;
+
+                        if tail.x - head.x == 2 {
+                            tail.x = head.x + 1;
+
+                            if tail.y != head.y {
+                                tail.y = head.y;
+                            }
+                        }
+                    }
                 }
 
                 grid[tail.x as usize][tail.y as usize] = "#".to_owned();
+
+                println!("tail {:?}", tail);
             }
         }
     }
@@ -80,7 +124,7 @@ impl Bridge {
             .iter()
             .map(|row| {
                 row.iter()
-                    .map(|col| if col.as_str() == "#" { 1 } else { 0 })
+                    .map(|col| i32::from(col.as_str() == "#"))
                     .sum::<i32>()
             })
             .sum()
