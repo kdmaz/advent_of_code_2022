@@ -8,39 +8,21 @@ struct Position {
 
 fn change_position(direction: &str, head: &mut Position, tail: &mut Position) {
     match direction {
-        "U" => {
-            head.y += 1;
+        "U" => head.y += 1,
+        "D" => head.y -= 1,
+        "R" => head.x += 1,
+        "L" => head.x -= 1,
+        _ => panic!("Invalid direction"),
+    }
 
-            if head.y.abs_diff(tail.y) == 2 {
-                tail.y = head.y - 1;
-                tail.x = head.x;
-            }
-        }
-        "D" => {
-            head.y -= 1;
+    if head.y.abs_diff(tail.y) > 1 {
+        tail.y = head.y - if direction == "U" { 1 } else { -1 };
+        tail.x = head.x;
+    }
 
-            if head.y.abs_diff(tail.y) == 2 {
-                tail.y = head.y + 1;
-                tail.x = head.x;
-            }
-        }
-        "R" => {
-            head.x += 1;
-
-            if head.x.abs_diff(tail.x) == 2 {
-                tail.x = head.x - 1;
-                tail.y = head.y;
-            }
-        }
-        "L" => {
-            head.x -= 1;
-
-            if head.x.abs_diff(tail.x) == 2 {
-                tail.x = head.x + 1;
-                tail.y = head.y;
-            }
-        }
-        _ => {}
+    if head.x.abs_diff(tail.x) > 1 {
+        tail.x = head.x - if direction == "R" { 1 } else { -1 };
+        tail.y = head.y;
     }
 }
 
