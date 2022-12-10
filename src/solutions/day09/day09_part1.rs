@@ -157,9 +157,9 @@ impl FromStr for Bridge {
             };
 
             min.x = cmp::min(min.x, current.x);
-            max.x = cmp::max(max.x, current.x);
-
             min.y = cmp::min(min.y, current.y);
+
+            max.x = cmp::max(max.x, current.x);
             max.y = cmp::max(max.y, current.y);
 
             start.x = cmp::min(min.x, start.x).abs();
