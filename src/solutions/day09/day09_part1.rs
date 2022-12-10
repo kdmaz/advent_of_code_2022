@@ -202,7 +202,7 @@ mod tests {
     fn input() {
         let input = read_file("input", 9);
         let output = main(&input);
-        let expected = 0;
+        let expected = 6181;
         assert_eq!(output, expected);
     }
 }
